@@ -1021,7 +1021,10 @@ class CAdminMod : public CModule {
         CString sUser = sLine.Token(1);
         CString sNetwork = sLine.Token(2);
         CUser* pUser = GetUser();
-
+		if (!m_pUser->IsAdmin()) {
+			PutModule(t_s("You must be an administrator to add a new network.  Please contact an administrator for assistance."));
+			return;
+		}
         if (sNetwork.empty()) {
             sNetwork = sUser;
         } else {
@@ -1067,7 +1070,12 @@ class CAdminMod : public CModule {
         CString sNetwork = sLine.Token(2);
         CUser* pUser = GetUser();
 
-        if (sNetwork.empty()) {
+		if (!m_pUser->IsAdmin()) {
+			PutModule(t_s("You must be an administrator to delete a network.  Please contact an administrator for assistance."));
+			return;
+		}
+ 
+       if (sNetwork.empty()) {
             sNetwork = sUser;
         } else {
             pUser = FindUser(sUser);
@@ -1149,7 +1157,12 @@ class CAdminMod : public CModule {
         CString sNetwork = sLine.Token(2);
         CString sServer = sLine.Token(3, true);
 
-        if (sServer.empty()) {
+		if (!m_pUser->IsAdmin()) {
+			PutModule(t_s("You must be an administrator to add a new server.  Please contact an administrator for assistance."));
+			return;
+		}
+ 
+       if (sServer.empty()) {
             PutModule(
                 t_s("Usage: AddServer <username> <network> <server> [[+]port] "
                     "[password]"));

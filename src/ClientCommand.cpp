@@ -536,7 +536,12 @@ void CClient::UserCommand(CString& sLine) {
         PutStatus(t_f("Total: {1}, Joined: {2}, Detached: {3}, Disabled: {4}")(
             vChans.size(), uNumJoined, uNumDetached, uNumDisabled));
     } else if (sCommand.Equals("ADDNETWORK")) {
-        if (!m_pUser->IsAdmin() && !m_pUser->HasSpaceForNewNetwork()) {
+ 
+		if (!m_pUser->IsAdmin()) {
+			PutStatus(t_s("ZNC users are not permitted to add networks on their own."));
+			return;
+		}
+    if (!m_pUser->IsAdmin() && !m_pUser->HasSpaceForNewNetwork()) {
             PutStatus(t_s(
                 "Network number limit reached. Ask an admin to increase the "
                 "limit for you, or delete unneeded networks using /znc "
@@ -568,6 +573,10 @@ void CClient::UserCommand(CString& sLine) {
         }
     } else if (sCommand.Equals("DELNETWORK")) {
         CString sNetwork = sLine.Token(1);
+		if (!m_pUser->IsAdmin()) {
+			PutStatus(t_s("ZNC users are not permitted to remove networks on their own."));
+			return;
+		}
 
         if (sNetwork.empty()) {
             PutStatus(t_s("Usage: DelNetwork <name>"));
@@ -749,6 +758,10 @@ void CClient::UserCommand(CString& sLine) {
                 "You must be connected with a network to use this command"));
             return;
         }
+		if (!m_pUser->IsAdmin()) {
+			PutStatus(t_s("ZNC users are not permitted to add servers on their own."));
+			return;
+		}
 
         if (sServer.empty()) {
             PutStatus(t_s("Usage: AddServer <host> [[+]port] [pass]"));
